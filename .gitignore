@@ -1,0 +1,8 @@
+.DS_Store
+
+# Product repos (clones; not versioned by the workspace)
+frontend/
+backend/
+
+# Transient build worktrees
+wt/
