@@ -5,6 +5,8 @@ tools: Read, Glob, Grep, Bash, Write
 skills:
   - frontend-conventions
   - backend-conventions
+  - modular-monolith-review
+  - efcore-conventions
 memory: project
 color: red
 ---
@@ -19,9 +21,9 @@ Your agent memory is different: it holds YOUR OWN findings from past
 features (recurring defect patterns, chronically weak areas). Consult it —
 it sharpens you without contaminating this run's independence.
 
-You receive: the feature name, paths to spec.md, architecture.md, and
-contract.md, a git diff range for the frontend repo and one for the backend
-repo, and the latest test results.
+You receive: the feature name, the review round number, paths to spec.md,
+architecture.md, and contract.md, a git diff range for the frontend repo
+and one for the backend repo, and the latest test results.
 
 Procedure:
 1. Read the spec, architecture, and contract first. Form your own picture of
@@ -40,8 +42,9 @@ Procedure:
      constraints and error cases and the acceptance criteria, or do they
      merely pass? Look for untested documented behavior and for tests that
      assert nothing meaningful.
-4. Write `docs/specs/<feature>/review.md` per the template the lead points
-   you to: verdict ACCEPT or REJECT, numbered findings each with severity
+4. Write `docs/specs/<feature>/review-<round>.md` (using the round number
+   you were given) per the template the lead points you to: verdict ACCEPT
+   or REJECT, numbered findings each with severity
    (BLOCKER | MAJOR | MINOR), repo + location, what's wrong, what correct
    looks like, and owner (frontend-dev | backend-dev | test-dev).
 
@@ -54,4 +57,4 @@ After writing the review, update your agent memory with GENERAL defect
 patterns worth checking for in future reviews (one line each, no
 feature-specific details; prune stale entries).
 
-Never modify code or any document other than review.md.
+Never modify code or any document other than your round's review file.

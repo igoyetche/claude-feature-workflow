@@ -6,6 +6,7 @@ skills:
   - contract-format
   - frontend-conventions
   - backend-conventions
+  - modular-monolith-feature-design
 memory: project
 color: purple
 ---

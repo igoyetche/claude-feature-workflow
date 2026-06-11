@@ -19,6 +19,12 @@ Repository: `frontend/` (relative to the workspace root)
 - Lint / typecheck: TODO
 - Run locally: TODO
 
+## Integration (e2e) tests
+This repo hosts the pipeline's cross-repo integration suite.
+- Location: TODO (e.g. e2e/)
+- Framework: TODO (e.g. Playwright)
+- Run command (expects the real backend running): TODO
+
 ## Conventions
 - TODO: component structure, state management, API client location,
   test file placement, fixtures to reuse, naming.

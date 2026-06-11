@@ -83,6 +83,10 @@ git -C backend  worktree add ../wt/be-impl  -b feature/$feature-impl
 git -C backend  worktree add ../wt/be-tests -b feature/$feature-tests
 ```
 
+Record each repo's base commit (`git -C frontend rev-parse HEAD`, same for
+backend) in status.md — Phase 5 diffs the feature branch against these
+exact SHAs, even if the repos' main branches move during the run.
+
 Then build in parallel with four workers:
 
 | Worker | Agent definition | Worktree | Task |
@@ -113,7 +117,17 @@ conflicts yourself. Remove the worktrees.
    backend repo (commands are in each repo's conventions skill).
 2. Then run cross-repo integration tests: have a `test-dev` instance create
    them from contract.md if they don't already exist, starting the real
-   backend and driving the real frontend against it.
+   backend and driving the real frontend against it. The integration suite
+   lives in the frontend repo (location and framework per the frontend
+   conventions skill). Give that instance its own worktree so it never
+   collides with dev agents fixing in the repos:
+
+   ```
+   git -C frontend worktree add ../wt/integration -b feature/$feature-integration feature/$feature
+   ```
+
+   Merge its branch into `feature/$feature` and remove the worktree when
+   the phase ends.
 
 Fix loop (max 3 rounds):
 - Triage each failure: implementation bug → dispatch to the owning dev
@@ -127,13 +141,15 @@ Fix loop (max 3 rounds):
 ## Phase 5 — Independent review
 
 Spawn a FRESH `reviewer` subagent. Context hygiene matters: give it ONLY
-the feature name, paths to spec.md, architecture.md, contract.md, the diff
-range for each repo (base..feature/$feature), and the latest test results.
-Do not summarize the build for it, do not pass dev agent transcripts, do
-not defend the code.
+the feature name, the review round number, paths to spec.md,
+architecture.md, contract.md, the diff range for each repo
+(`<base SHA from status.md>..feature/$feature`), and the latest test
+results. Do not summarize the build for it, do not pass dev agent
+transcripts, do not defend the code.
 
-The reviewer writes `docs/specs/$feature/review.md` with verdict ACCEPT or
-REJECT plus numbered findings.
+The reviewer writes `docs/specs/$feature/review-<round>.md` with verdict
+ACCEPT or REJECT plus numbered findings. One file per round — earlier
+rounds are kept for the Phase 6 retrospective.
 
 - ACCEPT → finalize status.md, commit, then Phase 6.
 - REJECT → dispatch each finding to the owning agent (dev or test-dev),

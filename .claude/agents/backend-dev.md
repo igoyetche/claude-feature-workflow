@@ -5,6 +5,8 @@ tools: Read, Glob, Grep, Write, Edit, Bash
 skills:
   - contract-format
   - backend-conventions
+  - modular-monolith-feature-design
+  - efcore-conventions
 memory: project
 color: green
 ---

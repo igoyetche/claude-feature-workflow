@@ -110,7 +110,10 @@ failed runs teach the most.
     ├── feature/               # /feature — orchestrator + templates
     ├── contract-format/       # contract rules (preloaded into agents)
     ├── frontend-conventions/  # YOUR frontend repo — customize
-    └── backend-conventions/   # YOUR backend repo — customize
+    ├── backend-conventions/   # YOUR backend repo — customize
+    ├── modular-monolith-feature-design/  # C# backend boundary rules (architect, backend-dev)
+    ├── modular-monolith-review/          # C# backend modularity audit (reviewer)
+    └── efcore-conventions/               # EF Core rules (backend-dev, reviewer)
 ```
 
 ## Tuning
