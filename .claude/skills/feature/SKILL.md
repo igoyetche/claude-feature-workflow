@@ -47,6 +47,13 @@ You are the spec clarifier. Subagents cannot talk to the user; you can.
    user-facing behavior, inputs/outputs, edge cases, error states, data
    touched, auth/permissions, non-goals, acceptance criteria — plus any
    questions `docs/pipeline-lessons.md` says past runs should have asked.
+   If the feature calls an external provider (LLM API, third-party service),
+   also ask how its live path will be verified — local secrets may be
+   toolkit-encrypted or otherwise unusable headlessly, so agree the
+   verification bucket (automated / lead smoke / manual) up front. If the
+   user trims the default testing strategy, record in the spec exactly which
+   pipeline checks the reduced strategy replaces, so Phases 4-5 don't
+   re-litigate it.
    Ask in small batches; keep going as long as real ambiguity remains, and
    no longer.
 3. Write `docs/specs/$feature/spec.md` using `templates/spec.md`. Every
@@ -83,6 +90,10 @@ git -C backend  worktree add ../wt/be-impl  -b feature/$feature-impl
 git -C backend  worktree add ../wt/be-tests -b feature/$feature-tests
 ```
 
+If both sides of the feature live in ONE repo, the branch names above
+collide: suffix them per worker instead (`-fe-impl`, `-be-impl`,
+`-fe-tests`, `-be-tests`) and create all four worktrees from that repo.
+
 Record each repo's base commit (`git -C frontend rev-parse HEAD`, same for
 backend) in status.md — Phase 5 diffs the feature branch against these
 exact SHAs, even if the repos' main branches move during the run.
@@ -102,20 +113,35 @@ environment, spawn them as parallel background subagents instead.
 
 In each worker's task prompt include: the feature name, its assigned
 worktree path, the full text of `contract.md`, the paths to `spec.md` and
-`architecture.md`, which side it owns, and a reminder to consult its agent
-memory before starting and update it when done. Remind test workers:
-black-box only — derive tests from spec + contract, never from
-implementation code.
+`architecture.md`, which side it owns, a reminder to consult its agent
+memory before starting and update it when done, and a note that fresh
+worktrees have no installed dependencies and no untracked env files (run
+the stack's install step first). Remind test workers: black-box only —
+derive tests from spec + contract, never from implementation code; and
+since the code under test is being built in parallel and doesn't exist in
+their worktree, they should verify their suite executes against a
+temporary contract-compliant stub (mutation-check it: break one rule,
+confirm the right test fails), then delete the stub and commit only test
+files.
 
 Wait for all four. Then, per repo, create a `feature/$feature` branch and
 merge the `-impl` and `-tests` branches into it, resolving mechanical
-conflicts yourself. Remove the worktrees.
+conflicts yourself. Do the merge in a fresh worktree (e.g. `wt/merge`),
+not the repo's main checkout — that checkout may be dirty or parked on an
+unrelated branch. Keep the merge worktree for Phase 4's gate runs; remove
+the build worktrees.
 
 ## Phase 4 — Test execution and fix loop
 
 1. Run the frontend suite in the frontend repo and the backend suite in the
-   backend repo (commands are in each repo's conventions skill).
-2. Then run cross-repo integration tests: have a `test-dev` instance create
+   backend repo (commands are in each repo's conventions skill). Invoke
+   every gate in its canonical form (the package/CI script, not a
+   hand-rolled variant): a runner script owned by one worker over files
+   owned by another has never actually executed until this moment.
+2. Then run cross-repo integration tests — unless the approved spec's
+   testing decision replaced this step with something narrower (the spec
+   governs; note the substitution in status.md). Otherwise have a
+   `test-dev` instance create
    them from contract.md if they don't already exist, starting the real
    backend and driving the real frontend against it. The integration suite
    lives in the frontend repo (location and framework per the frontend

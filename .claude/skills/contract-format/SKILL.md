@@ -17,7 +17,10 @@ other.
    method + path (or function signature / channel name), purpose, auth
    requirements.
 3. **Request schema** — every field: name, type, required/optional, constraints
-   (length, range, format), and a valid example.
+   (length, range, format), and a valid example. For map/record fields, define
+   the full cross of key-status × value-type: if unknown keys are ignored but
+   values must be a certain type, state which rule wins for an invalid value
+   under an unknown key.
 4. **Response schema** — same rigor, for success responses. Include an example.
 5. **Error behavior** — every error case: trigger condition, status code /
    error shape, message format. Unspecified errors are contract violations.
