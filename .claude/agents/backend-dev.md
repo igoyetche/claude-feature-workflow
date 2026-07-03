@@ -2,6 +2,7 @@
 name: backend-dev
 description: Implements the backend side of a feature from an approved spec, architecture, and contract. Works only inside the backend repository. Use in Phase 3 of the /feature pipeline and for fixing backend findings in Phases 4-5.
 tools: Read, Glob, Grep, Write, Edit, Bash
+model: opus
 skills:
   - contract-format
   - backend-conventions

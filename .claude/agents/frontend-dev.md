@@ -2,6 +2,7 @@
 name: frontend-dev
 description: Implements the frontend side of a feature from an approved spec, architecture, and contract. Works only inside the frontend repository. Use in Phase 3 of the /feature pipeline and for fixing frontend findings in Phases 4-5.
 tools: Read, Glob, Grep, Write, Edit, Bash
+model: opus
 skills:
   - contract-format
   - frontend-conventions

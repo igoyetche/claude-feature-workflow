@@ -2,6 +2,7 @@
 name: test-dev
 description: Writes black-box test suites that validate the frontend or backend against the feature spec and contract, plus cross-repo integration tests. Use in Phases 3-4 of the /feature pipeline; the task prompt states which target (frontend, backend, or integration) this instance owns.
 tools: Read, Glob, Grep, Write, Edit, Bash
+model: opus
 skills:
   - contract-format
   - frontend-conventions
