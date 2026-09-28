@@ -55,6 +55,51 @@ finishes, hits an iteration cap, or needs a contract change — all of which
 come back to you. Re-invoking `/feature <name>` resumes from the phase
 recorded in `docs/specs/<name>/status.md`.
 
+## Standalone planning and execution skills
+
+For an existing spec, use these two skills independently of `/feature`.
+They work with a single repository or multiple repositories, follow the
+target project's instructions, and choose one implementer or parallel
+implementers based on the work. Independent review is a separate step.
+
+- [`spec-to-implementation`](.claude/skills/spec-to-implementation/SKILL.md)
+  inspects the spec and existing code, saves the implementation plan and
+  execution strategy, and stops before implementation.
+- [`execute-implementation`](.claude/skills/execute-implementation/SKILL.md)
+  executes the agreed plan through integration, verification, independent
+  review, and the authorized handoff.
+
+Both are included when you copy `.claude/` as described above. To install
+only these skills personally, copy their directories from `.claude/skills/`
+into `~/.claude/skills/` for Claude Code or `~/.codex/skills/` for Codex.
+The same `SKILL.md` files work in both tools. Keep model preferences in
+your global agent instructions; these skills do not prescribe model names
+or a product stack.
+
+In Claude Code:
+
+```text
+/spec-to-implementation path/to/spec.md
+```
+
+Review the saved plan, request any changes, then run:
+
+```text
+/execute-implementation path/to/plan.md
+```
+
+In Codex, invoke the corresponding skills with
+`$spec-to-implementation path/to/spec.md` and
+`$execute-implementation path/to/plan.md`.
+
+Pass the saved plan's path when moving to a fresh session. The plan and its
+referenced spec carry accepted corrections and progress between sessions.
+Plan storage follows the target repository's documentation policy; in
+Conductor, the default is `.context/plans/` when that policy permits it.
+The handoff endpoint comes from the user's request and applicable
+instructions, so these skills do not automatically authorize a push,
+deployment, or merge.
+
 ## How the pipeline learns (Phase 6 + agent memory)
 
 Three layers, separated by how risky autonomous self-modification is:
@@ -108,6 +153,8 @@ failed runs teach the most.
 │   └── reviewer.md        # Phase 5 · fresh, independent · pattern memory
 └── skills/
     ├── feature/               # /feature — orchestrator + templates
+    ├── spec-to-implementation/ # Standalone spec → plan + execution strategy
+    ├── execute-implementation/ # Standalone plan → implementation + review
     ├── contract-format/       # contract rules (preloaded into agents)
     ├── frontend-conventions/  # YOUR frontend repo — customize
     ├── backend-conventions/   # YOUR backend repo — customize
